@@ -1,0 +1,41 @@
+- name: Application Server Configuration
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install PHP and MySQL client
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - php8.3-fpm
+        - php-mysql
+        - mysql-client
+
+    - name: Start and enable php-fpm
+      service:
+        name: php8.3-fpm
+        state: started
+        enabled: yes
+
+    - name: Copy submit.php
+      copy:
+        src: ../submit.php
+        dest: /var/www/html/submit.php
+        mode: '0644'
+
+    - name: Copy environment file from Terraform
+      copy:
+        src: ../ansible/db_env.sh
+        dest: /etc/profile.d/db_env.sh
+        mode: '0644'
+
+    - name: Upload SQL init script
+      copy:
+        src: ../sql/init_db.sql
+        dest: /tmp/init_db.sql
+
+    - name: Run init script on RDS
+      shell: |
+        source /etc/profile.d/db_env.sh
+        mysql -h $DB_HOST -u $DB_USER -p$DB_PASS < /tmp/init_db.sql

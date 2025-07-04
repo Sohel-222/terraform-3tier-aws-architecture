@@ -1,0 +1,20 @@
+- name: Web Server Configuration
+  hosts: all
+  become: yes
+  tasks:
+    - name: update apt cache
+      apt:  
+        update_cache: yes
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+    - name: start and enable nginx
+      service:
+         name: nginx
+         state: started
+         enabled: yes
+    - name: Copy HTML registration form
+      copy:
+        src: ../forms.html
+        dest: /var/www/html/
