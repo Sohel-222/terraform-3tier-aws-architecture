@@ -27,6 +27,7 @@ resource "tls_private_key" "rsa" {
 resource "local_file" "tf-key" {
   content  = tls_private_key.rsa.private_key_pem
   filename = "NayaWala"
+  file_permission = "0400"
 }
 
 resource "aws_lb_target_group_attachment" "internet_TG_EC2" {
@@ -43,6 +44,15 @@ module "security" {
 module "vpc" {
   source    = "./modules/vpc"
   alb_sg_id = module.security.alb_sg_id
+}
+
+module "bastion" {
+  source = "./modules/bastion"
+  ami_id = var.ami_id
+  instance_type = var.instance_type
+  vpc_sg_id = module.security.bastion_sg_id
+  subnet_id = module.vpc.websubnet_id
+  key_name = var.key_name
 }
 
 module "web" {

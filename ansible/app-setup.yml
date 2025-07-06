@@ -1,8 +1,13 @@
 - name: Application Server Configuration
   hosts: all
   become: yes
+
   tasks:
-    - name: Install PHP and MySQL client
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install PHP, MySQL client, and Nginx
       apt:
         name: "{{ item }}"
         state: present
@@ -11,31 +16,51 @@
         - php8.3-fpm
         - php-mysql
         - mysql-client
+        - nginx
 
-    - name: Start and enable php-fpm
+    - name: Ensure apache is stopped
+      service:
+        name: apache2
+        state: stopped
+
+    - name: Ensure php-fpm is started and enabled
       service:
         name: php8.3-fpm
         state: started
         enabled: yes
 
-    - name: Copy submit.php
-      copy:
-        src: ../submit.php
-        dest: /var/www/html/submit.php
-        mode: '0644'
+    - name: Ensure nginx is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
 
+    - name: Copy submit.php to web root
+      copy:
+        src: ./submit.php
+        dest: /var/www/html/
+        owner: www-data
+        group: www-data
+        mode: '0644'
     - name: Copy environment file from Terraform
       copy:
-        src: ../ansible/db_env.sh
+        src: ./db_env.sh
         dest: /etc/profile.d/db_env.sh
+        owner: root
+        group: root
         mode: '0644'
-
+    
     - name: Upload SQL init script
       copy:
-        src: ../sql/init_db.sql
+        src: ./sql/init_db.sql
         dest: /tmp/init_db.sql
-
+        mode: '0644'
+      
     - name: Run init script on RDS
       shell: |
+        set -a
         source /etc/profile.d/db_env.sh
-        mysql -h $DB_HOST -u $DB_USER -p$DB_PASS < /tmp/init_db.sql
+        set +a
+        mysql -h "${DB_HOST%%:*}" -P "${DB_HOST##*:}" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < /tmp/init_db.sql
+      args:
+        executable: /bin/bash

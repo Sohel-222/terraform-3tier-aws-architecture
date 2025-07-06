@@ -10,3 +10,6 @@ output "db_sg_id" {
 output "alb_sg_id" {
   value = aws_security_group.C-VPC-ALB-sg.id
 }
+output "bastion_sg_id" {
+  value = aws_security_group.C-VPC-Bastion-sg.id
+}

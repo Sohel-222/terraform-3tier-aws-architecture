@@ -127,7 +127,7 @@ resource "aws_route_table_association" "db-pvt-rt" {
 
 #DB_Subnet_group
 resource "aws_db_subnet_group" "default" {
-  name       = "main"
+  name = "db-subnet-group"
   subnet_ids = [aws_subnet.dbsubnet.id, aws_subnet.appsubnet.id]
 
   tags = {
