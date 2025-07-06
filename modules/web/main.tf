@@ -9,8 +9,17 @@ resource "aws_instance" "web_server" {
     Name = "Web_Server"
   }
   provisioner "local-exec" {
-  command = "echo [webserver] > ${path.root}/ansible/hosts.ini && echo ${self.private_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${path.root}/NayaWala >> ${path.root}/ansible/hosts.ini"
+  command = <<EOT
+    echo [webserver] >> ${path.root}/ansible/hosts.ini && \
+    echo ${self.private_ip} ansible_user=ubuntu ansible_ssh_private_key_file=../NayaWala ansible_ssh_common_args="'-o StrictHostKeyChecking=no'" >> ${path.root}/ansible/hosts.ini
+  EOT
   }
+}
+
+resource "aws_lb_target_group_attachment" "web_instance_attachment" {
+  target_group_arn = var.target_group_arn
+  target_id        = aws_instance.web_server.id
+  port             = 80
 }
 
 output "web_instance_id" {

@@ -9,6 +9,10 @@ resource "aws_instance" "app_server" {
     Name = "App_Server"
   }
   provisioner "local-exec" {
-  command = "echo [appserver] > ${path.root}/ansible/hosts.ini && echo ${self.private_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${path.root}/NayaWala >> ${path.root}/ansible/hosts.ini"
+  command = <<EOT
+    echo [appserver] >> ${path.root}/ansible/hosts.ini && \
+    echo ${self.private_ip} ansible_user=ubuntu ansible_ssh_private_key_file=../NayaWala ansible_ssh_common_args="'-o StrictHostKeyChecking=no'" >> ${path.root}/ansible/hosts.ini
+  EOT
   }
+
 }

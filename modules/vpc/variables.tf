@@ -19,6 +19,3 @@ variable "alb2-cidr_block" {
 variable "alb_sg_id" {
   type = string
 }
-variable "project_name" {
-  default = 3-tier(Terra-Ansi)
-}

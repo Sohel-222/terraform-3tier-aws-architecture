@@ -107,6 +107,12 @@ vpc_id = aws_vpc.custom_vpc.id
  }
 }
 
+#albsubnet association
+resource "aws_route_table_association" "albsubnet" {
+  subnet_id = aws_subnet.albsubnet.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
 #websubnet association
 resource "aws_route_table_association" "web-pub-rt" {
   subnet_id      = aws_subnet.websubnet.id

@@ -1,5 +1,5 @@
 - name: Application Server Configuration
-  hosts: all
+  hosts: appserver
   become: yes
 
   tasks:
@@ -23,6 +23,17 @@
         name: apache2
         state: stopped
 
+    - name: Enable PHP-FPM handling in Nginx config
+      blockinfile:
+        path: /etc/nginx/sites-available/default
+        marker: "# {mark} ANSIBLE MANAGED BLOCK: PHP-FPM"
+        insertafter: "^\\s*index.+$"
+        block: |
+          location ~ \.php$ {
+              include snippets/fastcgi-php.conf;
+              fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+          }
+
     - name: Ensure php-fpm is started and enabled
       service:
         name: php8.3-fpm
@@ -42,6 +53,7 @@
         owner: www-data
         group: www-data
         mode: '0644'
+
     - name: Copy environment file from Terraform
       copy:
         src: ./db_env.sh
@@ -55,12 +67,11 @@
         src: ./sql/init_db.sql
         dest: /tmp/init_db.sql
         mode: '0644'
-      
+    
     - name: Run init script on RDS
       shell: |
-        set -a
-        source /etc/profile.d/db_env.sh
-        set +a
-        mysql -h "${DB_HOST%%:*}" -P "${DB_HOST##*:}" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < /tmp/init_db.sql
+         source /etc/profile.d/db_env.sh
+         mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < /tmp/init_db.sql
       args:
         executable: /bin/bash
+

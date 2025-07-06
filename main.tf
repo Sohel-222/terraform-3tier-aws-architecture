@@ -61,6 +61,7 @@ module "web" {
   instance_type = var.instance_type
   vpc_sg_id     = module.security.web_sg_id
   subnet_id     = module.vpc.websubnet_id
+  target_group_arn = module.vpc.target_group_arn
 }
 
 module "app" {
@@ -83,10 +84,12 @@ module "db" {
 # Local .env file for Ansible (with DB creds)
 resource "local_file" "db_env_file" {
   content  = <<EOT
-DB_HOST=${module.db.db_endpoint}
-DB_USER=${var.username}
-DB_PASS=${var.password}
-DB_NAME=mydb
+env[DB_HOST]=${split(":", module.db.db_endpoint)[0]}
+env[DB_PORT]=3306
+env[DB_USER]=${var.username}
+env[DB_PASS]=${var.password}
+env[DB_NAME]=facebook
 EOT
   filename = "${path.module}/ansible/db_env.sh"
 }
+

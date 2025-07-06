@@ -1,5 +1,5 @@
 - name: Web Server Configuration
-  hosts: all
+  hosts: webserver
   become: yes
 
   vars:

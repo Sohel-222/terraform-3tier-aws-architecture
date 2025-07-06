@@ -19,3 +19,6 @@ output "ALB_id" {
 output "internet_tg_arn" {
   value = aws_lb_target_group.Internet_TarGrp.arn
 }
+output "target_group_arn" {
+  value = aws_lb_target_group.Internet_TarGrp.arn
+}
