@@ -1,10 +1,38 @@
-# 🚀 3-Tier Infrastructure Deployment Using Terraform Modules
+# 🚀 Fully Automated 3-Tier AWS Infrastructure with Terraform & Ansible
 
+> ⚡ No manual steps required — everything is **100% automated**!
 ---
 
 ## 🎯 Objective
 
-Design and deploy a complete **3-tier web application architecture on AWS** using **Terraform modules** and **Ansible automation** for configuration.
+This project provisions a complete **3-tier architecture on AWS** using **Terraform** and configures it automatically using **Ansible** — all triggered by a single script: `deploy.sh`.
+
+---
+
+## 🧠 Project Overview
+
+This is a **3-tier cloud architecture** consisting of:
+
+- **Load Balancer** → Handles external traffic  
+- **Web Tier** → Serves `forms.html` via Nginx  
+- **App Tier** → Processes form data using `submit.php`  
+- **Database Tier (RDS)** → Stores data in MySQL  
+- **Bastion Host** → Enables secure access to private subnets for Ansible
+
+All of this is deployed inside a custom **VPC** for better security and control.
+
+---
+
+## 🔄 Deployment Flow
+
+```text
+Internet → Load Balancer → Web Server → App Server → RDS (MySQL)
+```
+
+- **User sends request** → Hits **Load Balancer**  
+- **Web Server (Nginx)** → Serves the form  
+- **App Server (PHP)** → Accepts form data, sends to **RDS**  
+- **RDS (MySQL)** → Stores data securely
 
 ---
 
@@ -75,32 +103,51 @@ chmod +x deploy.sh
 ├── forms.html
 ├── main.tf
 ├── modules
-│   ├── app/
-│   ├── bastion/
-│   ├── rds/
-│   ├── sg/
-│   ├── vpc/
-│   └── web/
+│   ├── app
+│   │   ├── main.tf
+│   │   └── variable.tf
+│   ├── bastion
+│   │   ├── main.tf
+│   │   └── variables.tf
+│   ├── rds
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── sg
+│   │   ├── main.tf
+│   │   ├── output.tf
+│   │   └── variable.tf
+│   ├── vpc
+│   │   ├── main.tf
+│   │   ├── output.tf
+│   │   └── variables.tf
+│   └── web
+│       ├── main.tf
+│       └── variables.tf
 ├── outputs.tf
-├── sql/init_db.sql
+├── sql
+│   └── init_db.sql
 ├── submit.php
 ├── terraform.tfvars
-├── terraform.tfvars.example
 └── variables.tf
 ```
 
 ---
 
-## 🔁 Workflow
+## 🛠️ Prerequisites
 
-```text
-Internet → Load Balancer → Web Server → App Server → RDS (MySQL)
-```
+- AWS CLI configured with appropriate IAM credentials  
+- Terraform (v1.0+)  
+- Ansible (v2.10+)
 
-- Web server (Nginx) serves form
-- App server (PHP) handles submission
-- RDS stores the data
-- Bastion host allows Ansible to run on private servers
+---
+
+## ⚙️ Technologies Used
+
+- **Terraform** – Infrastructure as Code  
+- **Ansible** – Server Configuration  
+- **AWS** – VPC, EC2, RDS, Load Balancer  
+- **Ubuntu, Nginx, PHP, MySQL** – Web and App Stack
 
 ---
 
@@ -115,15 +162,6 @@ Internet → Load Balancer → Web Server → App Server → RDS (MySQL)
 
 ---
 
-## 📋 Prerequisites
-
-- AWS CLI configured
-- Terraform installed
-- Ansible installed
-- SSH Key pair created and path updated in `terraform.tfvars`
-
----
-
 ## 🧹 Destroy All Resources
 
 ```bash
@@ -135,7 +173,7 @@ chmod +x clean.sh
 
 ## 👨‍💻 Author
 
-**Shaikh Sakib**  
+**Sohel Shaikh**  
 Cloud & DevOps Intern  
 Building real infrastructure the real way 🚀
 
