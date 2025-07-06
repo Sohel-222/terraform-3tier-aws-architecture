@@ -113,6 +113,12 @@ resource "aws_route_table_association" "albsubnet" {
   route_table_id = aws_route_table.public-rt.id
 }
 
+#albsubnet2 association
+resource "aws_route_table_association" "albsubnet2" {
+  subnet_id = aws_subnet.albsubnet2.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
 #websubnet association
 resource "aws_route_table_association" "web-pub-rt" {
   subnet_id      = aws_subnet.websubnet.id
@@ -150,6 +156,7 @@ resource "aws_lb" "internet_lb" {
   subnets            = [aws_subnet.albsubnet.id,aws_subnet.albsubnet2.id]
 }
 
+#ALB_TargetGroup
 resource "aws_lb_target_group" "Internet_TarGrp" {
   name     = "internet-lb-tg"
   port     = 80
@@ -157,5 +164,14 @@ resource "aws_lb_target_group" "Internet_TarGrp" {
   vpc_id   = aws_vpc.custom_vpc.id
 }
 
+# Listener (automatically attaches target group to ALB)
+resource "aws_lb_listener" "internet_listener" {
+  load_balancer_arn = aws_lb.internet_lb.arn
+  port              = 80
+  protocol          = "HTTP"
 
-
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.Internet_TarGrp.arn
+  }
+}

@@ -84,12 +84,11 @@ module "db" {
 # Local .env file for Ansible (with DB creds)
 resource "local_file" "db_env_file" {
   content  = <<EOT
-env[DB_HOST]=${split(":", module.db.db_endpoint)[0]}
-env[DB_PORT]=3306
-env[DB_USER]=${var.username}
-env[DB_PASS]=${var.password}
-env[DB_NAME]=facebook
+export DB_HOST=${split(":", module.db.db_endpoint)[0]}
+export DB_PORT=3306
+export DB_USER=${var.username}
+export DB_PASS=${var.password}
+export DB_NAME=facebook
 EOT
   filename = "${path.module}/ansible/db_env.sh"
 }
-
