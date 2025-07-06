@@ -1,12 +1,11 @@
 # 🚀 Fully Automated 3-Tier AWS Infrastructure with Terraform & Ansible
 
-> ⚡ No manual steps required — everything is **100% automated**!
----
 
 ## 🎯 Objective
 
 This project provisions a complete **3-tier architecture on AWS** using **Terraform** and configures it automatically using **Ansible** — all triggered by a single script: `deploy.sh`.
 
+> ⚡ No manual steps required — everything is **100% automated**!
 ---
 
 ## 🧠 Project Overview
