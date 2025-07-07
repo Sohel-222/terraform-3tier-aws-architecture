@@ -9,7 +9,7 @@ terraform init
 terraform apply -auto-approve
 
 echo "🕒 Waiting for EC2 instances to be ready..."
-#sleep 30  # Optional: Adjust based on instance boot time
+sleep 20  # Optional: Adjust based on instance boot time
 
 echo "✅ Terraform provisioning completed."
 
@@ -22,7 +22,7 @@ echo "⏫ Copying PEM and Ansible files to Bastion..."
 BASTION_IP=$(terraform output -raw bastion_public_ip)
 PEM_PATH=~/3tier_Automation/NayaWala
 
-#scp -o StrictHostKeyChecking=no -i "$PEM_PATH" "$PEM_PATH" ubuntu@$BASTION_IP:.
+scp -o StrictHostKeyChecking=no -i "$PEM_PATH" "$PEM_PATH" ubuntu@$BASTION_IP:.
 scp -o StrictHostKeyChecking=no -i "$PEM_PATH" -r ./ansible ubuntu@$BASTION_IP:.
 scp -o StrictHostKeyChecking=no -i "$PEM_PATH" -r ./sql ubuntu@$BASTION_IP:./ansible
 scp -o StrictHostKeyChecking=no -i "$PEM_PATH" ./forms.html ubuntu@$BASTION_IP:./ansible
@@ -41,9 +41,4 @@ ssh -o StrictHostKeyChecking=no -i "$PEM_PATH" ubuntu@$BASTION_IP << 'EOF'
   ./db_env.sh
 EOF
 
-# Step 5: Export DB environment
-#echo "✅ Running db_env.sh"
-#chmod +x ./ansible/db_env.sh
-#./ansible/db_env.sh
-
-echo "sucessfull"
+echo "sucessfully completed"

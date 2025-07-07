@@ -10,3 +10,6 @@ variable "subnet_id" {
 variable "vpc_sg_id" {
   
 }
+variable "key_name" {
+  type = string
+}

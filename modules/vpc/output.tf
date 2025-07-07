@@ -22,3 +22,6 @@ output "internet_tg_arn" {
 output "target_group_arn" {
   value = aws_lb_target_group.Internet_TarGrp.arn
 }
+output "alb_dns_name" {
+  value = aws_lb.internet_lb.dns_name
+}

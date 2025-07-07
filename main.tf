@@ -62,6 +62,7 @@ module "web" {
   vpc_sg_id     = module.security.web_sg_id
   subnet_id     = module.vpc.websubnet_id
   target_group_arn = module.vpc.target_group_arn
+  key_name = aws_key_pair.tf-key-pair.key_name
 }
 
 module "app" {
@@ -70,6 +71,7 @@ module "app" {
   instance_type = var.instance_type
   vpc_sg_id     = module.security.app_sg_id
   subnet_id     = module.vpc.appsubnet_id
+  key_name = aws_key_pair.tf-key-pair.key_name
 }
 
 module "db" {

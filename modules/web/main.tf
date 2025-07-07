@@ -4,7 +4,7 @@ resource "aws_instance" "web_server" {
   instance_type = var.instance_type
   subnet_id = var.subnet_id
   vpc_security_group_ids = [var.vpc_sg_id]
-  key_name = "NayaWala"
+  key_name = var.key_name
   tags = {
     Name = "Web_Server"
   }

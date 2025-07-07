@@ -54,6 +54,12 @@
         group: www-data
         mode: '0644'
 
+    - name: Upload SQL init script
+      copy:
+        src: ./sql/init_db.sql
+        dest: /tmp/init_db.sql
+        mode: '0644'
+
     - name: Copy environment file from Terraform
       copy:
         src: ./db_env.sh
@@ -62,11 +68,11 @@
         group: root
         mode: '0644'
 
-    - name: Upload SQL init script
-      copy:
-        src: ./sql/init_db.sql
-        dest: /tmp/init_db.sql
-        mode: '0644'
+    - name: Execute init_db.sql to create database and table
+      shell: |
+        . /etc/profile.d/db_env.sh && mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" < /tmp/init_db.sql
+      args:
+        executable: /bin/bash
 
     - name: Read db_env.sh content from file
       slurp:
