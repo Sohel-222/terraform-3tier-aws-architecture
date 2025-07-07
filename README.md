@@ -111,6 +111,12 @@ This script will:
 
 ---
 
+## 📽️ Demo Video
+
+▶️ [Watch Project_Execution.mp4](./project_ss-video/Project_Execution.mp4)
+
+---
+
 ## 🧪 Deliverables
 
 - ✅ Modular Terraform code (with reusable modules)
